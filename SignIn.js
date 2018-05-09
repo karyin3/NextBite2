@@ -6,11 +6,15 @@ import firebase from 'firebase';
 import SignInForm from './SignInForm';
 
 export default class SignIn extends Component {
+    static navigationOptions = {
+        header: null
+    }
     constructor(props) {
         super(props);
         this.state = {
             error: null,
             spinnerDisplay: false,
+            showToast: false,
         };
 
         this.signIn = this.signIn.bind(this);
@@ -22,7 +26,6 @@ export default class SignIn extends Component {
         this.unregister = firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 this.setState({ userId: user.uid });
-                //this.props.history.push('/');
             } else {
                 this.setState({ userId: null }); //null out the saved state
             }
@@ -34,6 +37,7 @@ export default class SignIn extends Component {
         if (this.unregister) { //if have a function to unregister with
             this.unregister(); //call that function!
         }
+        this.setState({spinnerDisplay: false});
     }
 
     //A callback function for logging in existing users
@@ -46,6 +50,7 @@ export default class SignIn extends Component {
                 let errorMessage = error.message;
                 thisComponent.setState({ spinnerDisplay: false }); //don't show spinner with error message
                 thisComponent.setState({ error: errorMessage }); //put error message in state
+                thisComponent.setState({ showToast: true }); //pop up toast to contain error message
             });
     }
 
@@ -54,11 +59,21 @@ export default class SignIn extends Component {
         if (this.state.spinnerDisplay) {
             spinner = (<Spinner />)
         }
-        
+
+        let toast = null;
+        if (this.state.showToast) {
+            toast = Toast.show({
+                text: this.state.error,
+                buttonText: 'Okay',
+                duration: 3000
+            })
+        }
+
         return (
             <Container>
-                <SignInForm signInCallback={this.signIn} />
+                <SignInForm signInCallback={this.signIn} navigation={this.props.navigation} />
                 {spinner}
+                {toast}
             </Container>
         );
     }

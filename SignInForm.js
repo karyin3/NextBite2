@@ -1,15 +1,16 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { StyleSheet, Alert, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image } from 'react-native';
 import { Container, Content, Form, Item, Input, Label, Button } from 'native-base';
+import CustomIcon from './CustomIcon';
 
 export default class SignInForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            'email': '',
-            'password':'',
+            'email': undefined,
+            'password': undefined,
         };
     }
 
@@ -20,10 +21,10 @@ export default class SignInForm extends Component {
      * (for required field, with min length of 5, and valid email)
      */
     validate(value, validations) {
-        let errors = { isValid: true, style: '' };
+        let errors = { isValid: true };
 
-        if (value !== '') { //check validations
-            if (validations.required) {
+        if (value !== undefined) { //check validations
+            if (validations.required && value === '') {
                 errors.required = true;
                 errors.isValid = false;
             }
@@ -44,6 +45,13 @@ export default class SignInForm extends Component {
                 }
             }
         }
+
+        if (!errors.isValid) { //if found errors
+        } else if (value !== undefined) { //valid and has input
+        } else { //valid and no input
+            errors.isValid = false; //make false anyway
+        }
+
         return errors; //return data object
     }
 
@@ -52,34 +60,47 @@ export default class SignInForm extends Component {
         this.props.signInCallback(this.state.email, this.state.password);
     }
 
+    /* A helper function that renders the appropriate error message */
+    renderErrorMsg(error) {
+        if (error.email) {
+            return <Text style={styles.errorText}>Not a valid email address.</Text>
+        } else if (error.minLength) {
+            return <Text style={styles.errorText}>Password must be at least {error.minLength} characters.</Text>
+        }
+        return null
+    }
+
     render() {
         let emailErrors = this.validate(this.state.email, { required: true, email: true });
         let passwordErrors = this.validate(this.state.password, { required: true, minLength: 8 });
 
+        //button validation
+        let signInEnabled = (emailErrors.isValid && passwordErrors.isValid);
         return (
             <Container style={styles.container} >
+                <CustomIcon name="nextbitelogo" size={200} />
                 <Content>
                     <Form>
                         <InputField
                             label='Email'
                             keyboard='email-address'
-                            handleChange={(text) => this.setState({ email: text})}
+                            handleChange={(text) => this.setState({ email: text })}
                             secure={false}
                         />
-                        <EmailErrorMsg 
-                            error={emailErrors}
-                        />
+                        {this.renderErrorMsg(emailErrors)}
                         <InputField
                             label='Password'
                             keyboard='default'
-                            handleChange={(text) => this.setState({ password: text})}
+                            handleChange={(text) => this.setState({ password: text })}
                             secure={true}
                         />
-                        <PasswordErrorMsg 
-                            error={passwordErrors}
-                        />
+                        {this.renderErrorMsg(passwordErrors)}
                     </Form>
-                    <Button rounded style={styles.signInButton} onPress={() => this.signIn()}>
+                    <Button rounded
+                        style={[styles.signInButton, signInEnabled && styles.signInButtonAlt]}
+                        onPress={() => this.signIn()}
+                        disabled={!signInEnabled}
+                    >
                         <Text style={styles.buttonText}>
                             Sign In
                         </Text>
@@ -87,7 +108,10 @@ export default class SignInForm extends Component {
                     <Text style={styles.text} >
                         Don't have an account yet?
                     </Text>
-                    <Button transparent style={styles.signUp}>
+                    <Button transparent
+                        style={styles.signUp}
+                        onPress={() => this.props.navigation.navigate('SignUp')}
+                    >
                         <Text style={{ fontSize: 16 }}>Sign up here</Text>
                     </Button>
                 </Content>
@@ -101,18 +125,10 @@ const InputField = props => (
         <Label>{props.label}</Label>
         <Input
             keyboardType={props.keyboard}
-            onChangeText= {props.handleChange}
+            onChangeText={props.handleChange}
             secureTextEntry={props.secure}
         />
     </Item>
-);
-
-const EmailErrorMsg = props => (
-    props.error.email ? <Text>Not a valid email address</Text> : null
-);
-
-const PasswordErrorMsg = props => (
-    props.error.minLength ? <Text>Password must be at least {props.error.minLength} characters</Text> : null
 );
 
 const styles = StyleSheet.create({
@@ -121,17 +137,21 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     signInButton: {
-        flex:1,
+        width: 300,
         marginTop: 50,
-        backgroundColor: '#3E7C6D',
         justifyContent: 'center',
         alignSelf: 'center'
     },
+    signInButtonAlt: { //when button is enabled
+        backgroundColor: '#3E7C6D'
+    },
     buttonText: {
+
         fontSize: 20,
         color: 'white',
     },
     text: {
+        fontFamily: 'Roboto',
         marginTop: 10,
         marginBottom: 10,
         fontSize: 16,
@@ -139,5 +159,8 @@ const styles = StyleSheet.create({
     },
     signUp: {
         alignSelf: 'center',
+    },
+    errorText: {
+        marginLeft: 10
     }
 });
