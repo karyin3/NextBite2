@@ -7,6 +7,7 @@ import firebase from 'firebase';
 import SignIn from './SignIn';
 import SignUp from './SignUp';
 import HomePage from './HomePage';
+import Listing from './Listing';
 
 // Layout when user is signed out
 const SignedOut = StackNavigator({
@@ -26,10 +27,22 @@ const SignedOut = StackNavigator({
 const SignedIn = StackNavigator({
   Home: {
     screen: HomePage
+  },
+  DonationListing: {
+    screen: Listing
   }
 },
   {
-    initialRouteName: "Home"
+    initialRouteName: "DonationListing",
+    navigationOptions: {
+      headerStyle: {
+        backgroundColor: '#44beac',
+      },
+      headerTintColor: '#fff',
+      headerTitleStyle: {
+        fontWeight: 'bold',
+      },
+    },
   }
 );
 

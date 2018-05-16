@@ -33,6 +33,7 @@ export default class HomePage extends Component {
     signOut() {
         firebase.auth().signOut().then(() => this.props.navigation.navigate("SignedOut"))
     }
+    
     render() {
         return (
             <Container>
