@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react';
 import { Container, Content, Form, Item, Input, Label, Button, Radio, Right, Left } from 'native-base';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Image, KeyboardAvoidingView } from 'react-native';
 import RadioForm, { RadioButton, RadioButtonInput, RadioButtonLabel } from 'react-native-simple-radio-button';
 
 export default class SignUpFrom extends Component {
@@ -126,9 +126,9 @@ export default class SignUpFrom extends Component {
         ];
 
         return (
-            <Container style={styles.container}>
+            <KeyboardAvoidingView style={styles.container}>
                 <Content>
-                    <Text style={styles.signUpTitle}>Sign Up</Text>
+                <Image source={require('./resources/img/logo.png')} style={styles.logo}/>
                     <Form>
                         <InputField
                             label='First Name'
@@ -172,10 +172,12 @@ export default class SignUpFrom extends Component {
                             secure={false}
                         />
                         {this.renderErrorMsg(mobileErrors)}
-                        <Text style={{ margin: 10, fontSize: 16 }}>Please select one</Text>
+                        <Text style={styles.selectOneText}>Please select one</Text>
                         <RadioForm
                             formHorizontal={true}
                             initial={-1}
+                            style={styles.radiobutton}
+                            
                         >
                             <RadioButton labelHorizontal={true} >
                                 <RadioButtonInput
@@ -185,7 +187,8 @@ export default class SignUpFrom extends Component {
                                     isSelected={this.state.personType === 'vendor'}
                                     borderWidth={1}
                                     buttonSize={20}
-                                    buttonWrapStyle={{ marginLeft: 10 }}
+                                    buttonWrapStyle={{ marginLeft: 10}}
+                                    buttonColor={'#3E7C6D'}
                                 />
                                 <RadioButtonLabel
                                     obj={{ label: 'Vendor', value: 'vendor' }}
@@ -205,6 +208,7 @@ export default class SignUpFrom extends Component {
                                     borderWidth={1}
                                     buttonSize={20}
                                     buttonWrapStyle={{ marginLeft: 10 }}
+                                    buttonColor={'#3E7C6D'}
                                 />
                                 <RadioButtonLabel
                                     obj={{ label: 'Volunteer', value: 'volunteer' }}
@@ -218,7 +222,7 @@ export default class SignUpFrom extends Component {
                         </RadioForm>
                         {this.renderErrorMsg(typeErrors)}
                     </Form>
-                    <Button rounded
+                    <Button
                         style={[styles.signUpButton, signUpEnabled && styles.signUpButtonAlt]}
                         onPress={() => this.signUp()}
                         disabled={!signUpEnabled}
@@ -232,21 +236,22 @@ export default class SignUpFrom extends Component {
                         style={styles.signIn}
                         onPress={() => this.props.navigation.navigate('SignIn')}
                     >
-                        <Text style={{ fontSize: 16 }}>Sign In Here</Text>
+                        <Text style={{ fontSize: 20, color: '#3E7C6D', marginBottom: 10}}>Sign In Here</Text>
                     </Button>
                 </Content>
-            </Container>
+            </KeyboardAvoidingView>
         );
     }
 }
 
 const InputField = props => (
     <Item floatingLabel style={styles.inputField}>
-        <Label>{props.label}</Label>
+        <Label style={styles.inputLabel}>{props.label}</Label>
         <Input
             keyboardType={props.keyboard}
             onChangeText={props.handleChange}
             secureTextEntry={props.secure}
+            style={styles.input}
         />
     </Item>
 );
@@ -254,42 +259,58 @@ const InputField = props => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-    },
-    signUpTitle: {
-        fontSize: 32,
-        alignSelf:'center'
+        backgroundColor: '#ffffff',
     },
     signUpButton: {
-        width: 300,
+        width: '70%',
         marginTop: 50,
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderRadius: 10
     },
     signUpButtonAlt: { //when button is enabled
         backgroundColor: '#3E7C6D'
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 24,
         color: 'white',
     },
     errorText: {
-        marginLeft: 32,
+        fontSize: 16,
+        marginLeft: '10%',
         color: '#5F174F'
     },
     text: {
         marginTop: 10,
         marginBottom: 10,
-        fontSize: 16,
+        fontSize: 20,
         alignSelf: 'center',
     },
     signIn: {
         alignSelf: 'center',
     },
     radiobutton: {
-        alignSelf: 'flex-start'
+        marginLeft: "10%",
+    },
+    selectOneText: {
+        marginLeft: "10%",
+        fontSize: 16,
+        marginTop: '10%',
+        marginBottom: '5%'
     },
     inputField: {
-        marginLeft:32,
-        marginRight: 32
+        width: '80%',
+        alignSelf: 'center'
+    },
+    inputLabel: {
+        fontSize: 16
+    },
+    input: {
+        color: '#3E7C6D'
+    },
+    logo: {
+        alignSelf: 'center',
+        borderRadius: 20,
+        marginTop: '10%'
     }
 });

@@ -1,9 +1,8 @@
 'use strict';
 
 import React, { Component } from 'react';
-import { StyleSheet, View, Text, Image } from 'react-native';
+import { StyleSheet, View, Text, Image, KeyboardAvoidingView } from 'react-native';
 import { Container, Content, Form, Item, Input, Label, Button } from 'native-base';
-import CustomIcon from './CustomIcon';
 
 export default class SignInForm extends Component {
     constructor(props) {
@@ -77,9 +76,9 @@ export default class SignInForm extends Component {
         //button validation
         let signInEnabled = (emailErrors.isValid && passwordErrors.isValid);
         return (
-            <Container style={styles.container} >
-                <CustomIcon name="nextbitelogo" size={200} />
+            <KeyboardAvoidingView style={styles.container} >
                 <Content>
+                    <Image source={require('./resources/img/logo.png')} style={styles.logo}/>
                     <Form>
                         <InputField
                             label='Email'
@@ -96,7 +95,7 @@ export default class SignInForm extends Component {
                         />
                         {this.renderErrorMsg(passwordErrors)}
                     </Form>
-                    <Button rounded
+                    <Button
                         style={[styles.signInButton, signInEnabled && styles.signInButtonAlt]}
                         onPress={() => this.signIn()}
                         disabled={!signInEnabled}
@@ -105,28 +104,29 @@ export default class SignInForm extends Component {
                             Sign In
                         </Text>
                     </Button >
-                    <Text style={styles.text} >
+                    <Text style={styles.noAccount} >
                         Don't have an account yet?
                     </Text>
                     <Button transparent
                         style={styles.signUp}
                         onPress={() => this.props.navigation.navigate('SignUp')}
                     >
-                        <Text style={{ fontSize: 16 }}>Sign up here</Text>
+                        <Text style={{ fontSize: 20, color: '#3E7C6D' }}>Sign up here</Text>
                     </Button>
                 </Content>
-            </Container>
+            </KeyboardAvoidingView>
         );
     }
 }
 
 const InputField = props => (
-    <Item floatingLabel>
-        <Label>{props.label}</Label>
+    <Item floatingLabel style={styles.inputField}>
+        <Label style={styles.inputLabel}>{props.label}</Label>
         <Input
             keyboardType={props.keyboard}
             onChangeText={props.handleChange}
             secureTextEntry={props.secure}
+            style={styles.input}
         />
     </Item>
 );
@@ -134,33 +134,48 @@ const InputField = props => (
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 10,
+        backgroundColor: '#ffffff',
     },
     signInButton: {
-        width: 300,
+        width: '70%',
         marginTop: 50,
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderRadius: 10
     },
     signInButtonAlt: { //when button is enabled
         backgroundColor: '#3E7C6D'
     },
     buttonText: {
-
-        fontSize: 20,
+        fontSize: 24,
         color: 'white',
     },
-    text: {
-        fontFamily: 'Roboto',
+    noAccount: {
         marginTop: 10,
         marginBottom: 10,
-        fontSize: 16,
+        fontSize: 20,
         alignSelf: 'center',
     },
     signUp: {
         alignSelf: 'center',
     },
+    logo: {
+        alignSelf: 'center',
+        borderRadius: 20,
+        marginTop: '20%'
+    },
+    inputField: {
+        width: '80%',
+        alignSelf: 'center'
+    },
+    input: {
+        color: '#3E7C6D'
+    },
+    inputLabel: {
+        fontSize: 16
+    },
     errorText: {
-        marginLeft: 10
+        fontSize: 16,
+        marginLeft: '10%'
     }
 });

@@ -6,6 +6,10 @@ import firebase from 'firebase';
 import SignUpForm from './SignUpForm';
 
 export default class SignUp extends Component {
+    static navigationOptions = {
+        header: null
+    }
+    
     constructor(props) {
         super(props)
         this.state = {
