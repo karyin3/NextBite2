@@ -13,8 +13,9 @@ export default class Listing extends Component {
             showToast: false,
             spinnerDisplay: false
         }
+        this.submit = this.submit.bind(this);
     }
-    
+
     static navigationOptions = {
         title: 'Create a Listing',
     };
@@ -31,7 +32,9 @@ export default class Listing extends Component {
         }
     }
 
-    submit(location, boxes, expirationDate, weight, tags) {
+    submit(location, boxes, expirationDate, weight, tags, claimed) {
+        console.log(claimed)
+        console.log(location)
         let thisComponent = this;
         thisComponent.setState({ spinnerDisplay: true }); //show loading spinner while user submits form
 
@@ -43,7 +46,8 @@ export default class Listing extends Component {
             weight: weight,
             tags: tags,
             time: firebase.database.ServerValue.TIMESTAMP,
-            userId: firebase.auth().currentUser.uid
+            userId: firebase.auth().currentUser.uid,
+            claimed: claimed
         }
 
         let listing = listingsRef.push(newListing); // upload msg to database
@@ -56,8 +60,17 @@ export default class Listing extends Component {
             listingId: listingId,
         }
         usersRef.push(newUserListing);
-    }
 
+        /* Add listing to appropriate farmer's market */
+        console.log(location.split(",")[0])
+        let marketsRef = firebase.database().ref(`markets/${location.split(",")[0]}`);
+        let newMarketListing = {
+            listingId: listingId,
+            expirationDate: String(expirationDate),
+        }
+        console.log(newMarketListing)
+        marketsRef.push(newMarketListing);
+    }
     render() {
         let spinner = null;
         if (this.state.spinnerDisplay) {

@@ -8,6 +8,7 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import HomePage from './HomePage';
 import Listing from './Listing';
+import ListingItem from './ListingItem';
 
 // Layout when user is signed out
 const SignedOut = StackNavigator({
@@ -30,10 +31,14 @@ const SignedIn = StackNavigator({
   },
   DonationListing: {
     screen: Listing
+  },
+  ListingItem: {
+    screen: ListingItem
   }
 },
   {
     initialRouteName: "DonationListing",
+
     navigationOptions: {
       headerStyle: {
         backgroundColor: '#44beac',

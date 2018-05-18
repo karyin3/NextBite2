@@ -16,7 +16,8 @@ export default class ListingsForm extends Component {
             expirationDate: undefined,
             weight: undefined,
             tags: undefined,
-            isTimePickerVisible: false
+            isTimePickerVisible: false,
+            claimed: "no"
         }
     };
 
@@ -57,14 +58,14 @@ export default class ListingsForm extends Component {
             );
         } else {
             return (
-                <Text style={styles.timepickertxtAlt}>{this.state.expirationDate.toString().slice(0,-15)}</Text>
+                <Text style={styles.timepickertxtAlt}>{this.state.expirationDate.toString().slice(0, -15)}</Text>
             );
         }
     }
 
     //handle submit button
     submit() {
-        this.props.submitCallback(this.state.location, this.state.boxes, this.state.expirationDate, this.state.weight, this.state.tags);
+        this.props.submitCallback(this.state.location, this.state.boxes, this.state.expirationDate, this.state.weight, this.state.tags, this.state.claimed);
     }
 
     render() {
@@ -317,7 +318,7 @@ export default class ListingsForm extends Component {
                         onCancel={this.hideTimePicker}
                         mode='time'
                     />
-                    <Button rounded
+                    <Button
                         style={[styles.submitBtn, submitEnabled && styles.submitBtnAlt]}
                         onPress={() => this.submit()}
                         disabled={!submitEnabled}
@@ -333,10 +334,6 @@ export default class ListingsForm extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1
-    },
-    title: {
-        fontSize: 24,
-        alignSelf: 'center'
     },
     view: {
         flex: 1,
@@ -356,38 +353,37 @@ const styles = StyleSheet.create({
     },
     timepickerbtn: {
         width: '88%',
-        marginRight: 30,
-        borderBottomWidth: 0.7,
+        marginRight: '10%',
+        borderBottomWidth: 0.5,
         borderColor: '#333333',
         alignSelf: 'flex-end'
     },
     timepickertxt: {
-        marginLeft: 8,
         width: '90%',
         fontSize: 16,
         color: '#C7C6CC'
     },
-    timepickertxtAlt: {
-        marginLeft: 8,
+    timepickertxtAlt: { // when time is picked
         width: '90%',
         fontSize: 16,
         color: '#333333'
     },
     timepickericon: {
-        marginRight: 5,
+        marginRight: 30,
         fontSize: 16
     },
     submitBtn: {
-        width: 300,
+        width: '70%',
         marginTop: 20,
         justifyContent: 'center',
-        alignSelf: 'center'
+        alignSelf: 'center',
+        borderRadius: 10
     },
-    submitBtnAlt: {
+    submitBtnAlt: { // when button is enabled
         backgroundColor: '#3E7C6D'
     },
     buttonText: {
-        fontSize: 20,
+        fontSize: 24,
         color: 'white',
     },
     left: {
@@ -402,7 +398,7 @@ const pickerSelectStyles = StyleSheet.create({
     inputAndroid: {
     },
     viewContainer: {
-        marginRight: 30,
+        marginRight: '10%',
     },
     underline: {
         borderTopColor: '#333333',
