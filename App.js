@@ -8,7 +8,7 @@ import SignIn from './SignIn';
 import SignUp from './SignUp';
 import HomePage from './HomePage';
 import Listing from './Listing';
-import ListingItem from './ListingItem';
+import CurrentDonations from './CurrentDonations';
 
 // Layout when user is signed out
 const SignedOut = StackNavigator({
@@ -29,15 +29,15 @@ const SignedIn = StackNavigator({
   Home: {
     screen: HomePage
   },
-  DonationListing: {
+  ListDonation: {
     screen: Listing
   },
-  ListingItem: {
-    screen: ListingItem
+  CurrentDonations: {
+    screen: CurrentDonations
   }
 },
   {
-    initialRouteName: "DonationListing",
+    initialRouteName: "ListDonation",
 
     navigationOptions: {
       headerStyle: {

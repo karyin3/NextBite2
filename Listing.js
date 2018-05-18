@@ -79,7 +79,7 @@ export default class Listing extends Component {
 
         return (
             <Container>
-                <ListingsForm submitCallback={this.submit} />
+                <ListingsForm submitCallback={this.submit} navigation={this.props.navigation} />
                 {spinner}
             </Container>
         );

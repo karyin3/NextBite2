@@ -66,6 +66,7 @@ export default class ListingsForm extends Component {
     //handle submit button
     submit() {
         this.props.submitCallback(this.state.location, this.state.boxes, this.state.expirationDate, this.state.weight, this.state.tags, this.state.claimed);
+        this.props.navigation.navigate('CurrentDonations');
     }
 
     render() {
@@ -249,7 +250,7 @@ export default class ListingsForm extends Component {
                     </View>
                     <View style={styles.view}>
                         <Left style={styles.left}>
-                            <Icon name="cubes" style={styles.icon} />
+                            <Icon name="cube" style={styles.icon} />
                         </Left>
                         <Right style={styles.right} >
                             <RNPickerSelect
@@ -283,7 +284,7 @@ export default class ListingsForm extends Component {
                     </View>
                     <View style={styles.view}>
                         <Left style={styles.left}>
-                            <Icon name="tag" style={styles.icon} />
+                            <Icon name="tags" style={styles.icon} />
                         </Left>
                         <Right style={styles.right} >
                             <RNPickerSelect
@@ -343,12 +344,12 @@ const styles = StyleSheet.create({
     },
     icon: {
         fontSize: 50,
-        color: "#3E7C6D",
+        color: "#247f6e",
         alignSelf: 'center'
     },
     iconscale: {
         fontSize: 45,
-        color: "#3E7C6D",
+        color: "#247f6e",
         alignSelf: 'center'
     },
     timepickerbtn: {
@@ -374,13 +375,15 @@ const styles = StyleSheet.create({
     },
     submitBtn: {
         width: '70%',
-        marginTop: 20,
+        marginTop: 50,
         justifyContent: 'center',
         alignSelf: 'center',
-        borderRadius: 10
+        borderRadius: 10,
+        elevation: 0,
+        backgroundColor: '#CCCCCC'
     },
     submitBtnAlt: { // when button is enabled
-        backgroundColor: '#3E7C6D'
+        backgroundColor: '#44beac'
     },
     buttonText: {
         fontSize: 24,

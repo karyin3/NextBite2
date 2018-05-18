@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import { Container, Content, Card, CardItem, Body, Button } from 'native-base';
-import firebase from 'firebase';
 
 export default class ListingItem extends Component {
     constructor(props) {
@@ -28,6 +27,7 @@ export default class ListingItem extends Component {
         let tag = "Types of food: " + this.props.tag
         let expiration = "Latest pickup time: " + this.props.expiration
         let claimed = "Status: " + this.checkStatus()
+        //let volunteer = "Claimed by: " + this.props.claimedby
 
         return (
             <Container>
@@ -35,13 +35,13 @@ export default class ListingItem extends Component {
                     <Card>
                         <CardItem>
                             <Body>
-                                <Text>Created at</Text>
-                                <Text>Pickup Location</Text>
-                                <Text>Number of boxes</Text>
-                                <Text>Approximate weight</Text>
-                                <Text>Types of food</Text>
-                                <Text>Latest pickup time</Text>
-                                <Text>Status</Text>
+                                <Text>{timestamp}</Text>
+                                <Text>{location}</Text>
+                                <Text>{numBox}</Text>
+                                <Text>{weight}</Text>
+                                <Text>{tag}</Text>
+                                <Text>{expiration}</Text>
+                                <Text>{claimed}</Text>
                             </Body>
                         </CardItem>
                     </Card>
