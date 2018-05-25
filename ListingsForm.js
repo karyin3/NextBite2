@@ -260,7 +260,7 @@ export default class ListingsForm extends Component {
                                 }}
                                 items={markets}
                                 onValueChange={(value) => this.setState({ location: value })}
-                                value="Pike Place Market"
+                                value={this.state.location}
                                 style={{ ...pickerSelectStyles }}
                             />
                         </Right>

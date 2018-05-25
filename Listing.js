@@ -73,7 +73,15 @@ export default class Listing extends Component {
         }
         console.log(newMarketListing)
         marketsRef.push(newMarketListing);
+
+        // Add listing to pending rescues
+        let pendingRef = firebase.database().ref(`users/${currUser}/pendingRescues`);
+        let newPendingListing = {
+            listingId: listingId
+        }
+        pendingRef.push(newPendingListing);
     }
+
     render() {
         let spinner = null;
         if (this.state.spinnerDisplay) {
