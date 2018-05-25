@@ -37,7 +37,7 @@ const SignedIn = StackNavigator({
   }
 },
   {
-    initialRouteName: "ListDonation",
+    initialRouteName: "CurrentDonations",
 
     navigationOptions: {
       headerStyle: {

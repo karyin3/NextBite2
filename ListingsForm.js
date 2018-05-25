@@ -17,7 +17,10 @@ export default class ListingsForm extends Component {
             weight: undefined,
             tags: undefined,
             isTimePickerVisible: false,
-            claimed: "no"
+            claimed: "no",
+            claimedBy: "",
+            delivered: "no",
+            dropoffLocation: ""
         }
     };
 
@@ -54,18 +57,32 @@ export default class ListingsForm extends Component {
     showTimePicked = () => {
         if (this.state.expirationDate === undefined) {
             return (
-                <Text style={styles.timepickertxt}>Select latest pickup time</Text>
+                <Text style={styles.timepickertxt}>Latest pickup time today</Text>
             );
         } else {
+            // render a more readable time
+            let datetime = this.state.expirationDate.toString().slice(0, -18).split(" ");
+            let hour = datetime[4].split(":")[0];
+            if (parseInt(hour) > 0 && parseInt(hour) < 12) {
+                datetime[4] = datetime[4] + " AM";
+            } else if (parseInt(hour) > 12) { 
+                datetime[4] = (parseInt(hour) - 12).toString() + ":" + datetime[4].split(":")[1] + " PM";
+            } else if (parseInt(hour) === 12) {
+                datetime[4] = datetime[4] + " PM";
+            } else if (parseInt(hour) === 0) {
+                datetime[4] = "12:" + datetime[4].split(":")[1] + " AM";
+            }
+            let displayedTime = datetime[0] + " " + datetime[1] + " " + datetime[2] + ", " + datetime[4];
+            
             return (
-                <Text style={styles.timepickertxtAlt}>{this.state.expirationDate.toString().slice(0, -15)}</Text>
+                <Text style={styles.timepickertxtAlt}>{displayedTime}</Text>
             );
         }
     }
 
     //handle submit button
     submit() {
-        this.props.submitCallback(this.state.location, this.state.boxes, this.state.expirationDate, this.state.weight, this.state.tags, this.state.claimed);
+        this.props.submitCallback(this.state.location, this.state.boxes, this.state.expirationDate, this.state.weight, this.state.tags, this.state.claimed, this.state.claimedBy, this.state.delivered, this.state.dropoffLocation);
         this.props.navigation.navigate('CurrentDonations');
     }
 
@@ -243,7 +260,7 @@ export default class ListingsForm extends Component {
                                 }}
                                 items={markets}
                                 onValueChange={(value) => this.setState({ location: value })}
-                                value={this.state.location}
+                                value="Pike Place Market"
                                 style={{ ...pickerSelectStyles }}
                             />
                         </Right>

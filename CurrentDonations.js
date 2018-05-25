@@ -2,6 +2,7 @@
 
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { Button } from 'native-base';
 import firebase from 'firebase';
 import ListingItem from './ListingItem';
 
@@ -9,7 +10,9 @@ export default class CurrentDonations extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            donationCards: []
         };
+        this.readableTime = this.readableTime.bind(this);
     }
 
     static navigationOptions = {
@@ -18,56 +21,53 @@ export default class CurrentDonations extends Component {
 
     componentDidMount() {
         let userListings = [];
-        let currentDonationCards = []
-        let volunteer = ""
+        let currentDonationCards = [];
+        let volunteerName = ""
 
         this.unregister = firebase.auth().onAuthStateChanged(user => {
             if (user) {
                 // query for vendor's listingIds
-                let listingRef = firebase.database().ref(`users/${user.uid}/listings`);
+                let listingRef = firebase.database().ref(`users/${user.uid}/pendingRescues`);
                 listingRef.on('value', (snapshot) => {
                     snapshot.forEach(function (child) {
                         let listingObj = child.val();
                         userListings.push(listingObj.listingId)
                     });
-                    this.setState({ userListingsId: userListings })
 
                     //query for details of each listing
-                    let listing = userListings.map((listingId) => {
+                    let listings = userListings.map((listingId) => {
                         let listingDetailRef = firebase.database().ref(`listings/${listingId}`);
                         listingDetailRef.on('value', (snapshot) => {
                             let listingDetailObj = {};
                             snapshot.forEach(function (child) {
                                 listingDetailObj[child.key] = child.val()
+
                             });
 
-                            if (listingDetailObj.claimedby) {
-                                // retrieve volunteer's name for the listing
-                                let usersRef = firebase.database().ref(`users/${listingDetailObj.claimedby}`);
-                                usersRef.on('value', (snapshot) => {
-                                    snapshot.forEach(function (child) {
-                                        if (child.key == 'firstName') {
-                                            volunteer += child.val() + " ";
-                                        }
-                                        if (child.key == 'lastName') {
-                                            volunteer += child.val();
-                                        }
-                                    });
+                            listingDetailObj["listingId"] = listingId;
+                            // retrieve volunteer's name for the listing
+                            let usersRef = firebase.database().ref(`users/${listingDetailObj.claimedBy}`);
+                            usersRef.once('value', (snapshot) => {
+                                volunteerName = `${snapshot.child("firstName").val()} ${snapshot.child("lastName").val()}`;
+                                currentDonationCards.push(<ListingItem
+                                    timestamp={this.readableTime(new Date(listingDetailObj.time))}
+                                    location={listingDetailObj.location.split(",")[0]}
+                                    boxes={listingDetailObj.boxes}
+                                    weight={listingDetailObj.weight}
+                                    tag={listingDetailObj.tags}
+                                    expiration={this.readableTime(listingDetailObj.expirationDate)}
+                                    claimed={listingDetailObj.claimed}
+                                    volunteer={volunteerName}
+                                    delivered={listingDetailObj.delivered}
+                                    dropoff={listingDetailObj.dropoffLocation}
+                                    listingID={listingDetailObj.listingId}
+                                />);
+
+                                currentDonationCards.sort(function (a, b) {
+                                    return new Date(a.props.expiration) - new Date(b.props.expiration);
                                 });
-                            }
-
-                            currentDonationCards.push(<ListingItem
-                                timestamp={listingDetailObj.time}
-                                location={listingDetailObj.location}
-                                numBox={listingDetailObj.boxes}
-                                weight={listingDetailObj.weight}
-                                tag={listingDetailObj.tags}
-                                expiration={listingDetailObj.expirationDate}
-                                claim={listingDetailObj.claimed}
-                                volunteer={volunteer}
-                            />);
-
-                            this.setState({ donationCards: currentDonationCards })
+                                this.setState({ donationCards: currentDonationCards })
+                            });
                         });
                     });
                 });
@@ -83,6 +83,21 @@ export default class CurrentDonations extends Component {
         }
     }
 
+    readableTime(time) {
+        let dt = time.toString().slice(0, -18).split(" ");
+        let hour = dt[4].split(":")[0];
+        if (parseInt(hour) > 0 && parseInt(hour) < 12) {
+            dt[4] = dt[4] + " AM";
+        } else if (parseInt(hour) > 12) {
+            dt[4] = (parseInt(hour) - 12).toString() + ":" + dt[4].split(":")[1] + " PM";
+        } else if (parseInt(hour) === 12) {
+            dt[4] = dt[4] + " PM";
+        } else if (parseInt(hour) === 0) {
+            dt[4] = "12:" + dt[4].split(":")[1] + " AM";
+        }
+        return dt[0] + " " + dt[1] + " " + dt[2] + " " + dt[3] + ", " + dt[4];
+    }
+
     render() {
         return (
             <ScrollView style={styles.cards}>
@@ -96,5 +111,6 @@ const styles = StyleSheet.create({
     cards: {
         width: '100%',
         height: '100%',
+        padding: 10
     }
 });
